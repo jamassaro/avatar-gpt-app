@@ -134,7 +134,6 @@ const InputDataForm = ({ threatId }) => {
                 <option key={option.id} value={option.name}>{option.name}</option>
               ))
             }
-           
           </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
@@ -162,7 +161,6 @@ const InputDataForm = ({ threatId }) => {
             Generar Casos de Prueba
           </Button>
           </div>
-         
         </Form>
   )
 }

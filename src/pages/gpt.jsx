@@ -15,10 +15,7 @@ const Gpt = () => {
     handleCreateThreathread()
   }, [])
   
-
-  return (
-      <InputDataForm  threatId={threatId}/>
-  )
+  return <InputDataForm  threatId={threatId}/>
 }
 
 
