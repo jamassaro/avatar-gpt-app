@@ -1,0 +1,8 @@
+.form-container {
+  border:  1px solid white;
+  box-shadow: 2px 2px 2px 2px  #e8e6e6;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+}

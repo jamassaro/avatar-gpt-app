@@ -1,0 +1,46 @@
+.page-container {
+  display: grid;
+  min-height: 100dvh;
+  grid-template-rows: auto 1fr auto;
+}
+
+.nav {
+  background-color: #5280e3;
+  height: 70px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo {
+  margin-left: 300px;
+}
+
+.nav-input {
+  margin-right: 10px;
+  width: 300px;
+  height: 40px;
+}
+
+.not-nav {
+  background-color: grey;
+  height: 70px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.logout {
+  width: 150px;
+  height: 50px;
+  background-color: black;
+  border-color: black;
+  
+}
+
+.login {
+  width: 100px;
+  height: 40px;
+  background-color: black;
+  border-color: black;
+}
