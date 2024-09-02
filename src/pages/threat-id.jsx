@@ -1,107 +1,63 @@
-import { Button, Table } from "react-bootstrap"
 import {  useParams } from "react-router-dom"
-import { getMessages, runMessage } from "../services/gpt"
-import { useState } from "react"
-import { unparse } from "papaparse"
-
-
-const TableComponent = ({ response }) => {
-const jsonString = response?.value?.replace(/```json|```/g, '');
-const json = JSON?.parse(jsonString);
-console.log('json', json.TestPlan)
-const value = json.casosDePrueba
-|| []
-console.log('json', value)
-const convertJsonToCsv = () => {
-    const csv = unparse(value);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', 'data.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  return (
-  <div className="w-100">
-
-    <div className="mb-3 d-flex w-100 justify-content-end">
-    <Button variant="primary" onClick={convertJsonToCsv}>Descargar CSV</Button>
-    </div>
-    <Table striped bordered hover overFlow-auto>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Test Type</th>
-        <th>Case Identifier</th>
-        <th>Summary</th>
-        <th>Pre-condition</th>
-        <th>Description</th>
-        <th>Action</th>
-        <th>Test Data</th>
-        <th>Expected Results</th>
-        <th>Responsible</th>
-        <th>Repository Directory</th>
-        <th>Business</th>
-      </tr>
-    </thead>
-    <tbody>
-      {value?.map((testCase, index) => (
-        <tr key={index}>
-          <td>{index + 1}</td>
-          <td>{testCase['Tipo de test'] || ''}</td>
-          <td>{testCase['Identificador del caso'] || ''}</td>
-          <td>{testCase?.Resumen || ''}</td>
-          <td>{testCase?.PreCondicion || ''}</td>
-          <td>{testCase?.Descripción || ''}</td>
-          <td>{testCase?.Accion || ''}</td>
-          <td>{testCase?.Datos || ''}</td>
-          <td>{testCase['Resultados esperados'] || ''}</td>
-          <td>{testCase?.Responsable || ''}</td>
-          <td>{testCase['Directorio de repositorio de test'] || ''}</td>
-          <td>{testCase?.Negocio || ''}</td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-    </div>
-  )
-}
+import {  getMessages, getRun } from "../services/gpt"
+import {  useEffect, useState } from "react"
+import TableComponent from "../components/table"
+import { Blocks } from "react-loader-spinner"
 
 
 const ThreatId = () => {
+  const [runComplete, setRunComplete] = useState(false)
   const [response, setResponse] = useState(null)
+  const [loading, setLoading] = useState(false)
+ const { threatId, runId } = useParams()
 
-
- const { threatId } = useParams()
+ useEffect(() => {
+  setLoading(true);
   
-
-  const handleRuns = async () => {
-    await runMessage(threatId)
-  }
-
   const handleGetMessages = async () => {
-    if(threatId){
-      await getMessages(threatId).then((res) => {
-        setResponse(res.data[0].content[0].text)
-      })
-     
-    } else {
-      console.log('error')
+    await getMessages(threatId).then((res) => {
+      setResponse(res.data[0].content[0].text);
+    });
+  };
+  
+  const handleRuns = async () => {
+    await getRun(threatId, runId).then(({ status }) => {
+      if (status === 'completed') {
+        handleGetMessages();
+        setRunComplete(true);
+        setLoading(false);
+        clearInterval(intervalId)
     }
-  } 
+  })
+  }
+   
 
+  handleRuns();
+  
+  const intervalId = setInterval(() => {
+    handleRuns();
+  }, 5000);
 
+  return () => clearInterval(intervalId);
+}, [threatId, runId]);
 
   return (
    <div className="w-100">
    <div className="d-flex gap-3">
-        <Button variant="primary" onClick={handleRuns}>Run</Button>
-        <Button variant="primary" onClick={handleGetMessages}>Messages</Button>
-      </div>
+    </div>
       <hr className="w-100" />
-      {response ? <TableComponent response={response} /> : null}  
+      { loading ? 
+      <div className="w-100 d-flex flex-column justify-content-center align-items-center h-100">
+        <Blocks
+        height="200"
+        width="200"
+        color="#5280e3"
+        ariaLabel="blocks-loading"
+        visible={true}
+        /> 
+        <p>Generando casos de prueba</p>
+        </div>
+        : runComplete && response ? <TableComponent response={response} /> :  null}  
    </div>
    
  
@@ -109,3 +65,16 @@ const ThreatId = () => {
 }
 
 export default ThreatId
+
+
+ 
+  // const handleReSendMessages = async () => {
+  //   const message= 'Considero que los casos no cubren todas las casuísticas de calidad para la información entregada, reevalúalo y genera más casos para un plan de pruebas que considere casos de borde, sin descartar los generados anteriormente'
+  //   await sendMessages(message, threatId).then(() => {
+  //     setResponse(false)
+  //     // setRun(false)
+  //   }).then(async () => {
+  //     // await runMessage(threatId)
+  //     // setRun(true)
+  //   })
+  // }

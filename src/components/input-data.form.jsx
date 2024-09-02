@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
-import { sendMessages } from "../services/gpt"
+import { runMessage, sendMessages } from "../services/gpt"
 import { useNavigate } from "react-router-dom"
 
 const options  = [
@@ -32,6 +32,7 @@ const options  = [
 
 const InputDataForm = ({ threatId }) => {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
   const [value, setValue] = useState({
     description: '',
     scope: '',
@@ -77,15 +78,24 @@ const InputDataForm = ({ threatId }) => {
     [name]: value
   }))
  }
+ const handleRuns = async () => {
+  setLoading(true)
+  await runMessage(threatId).then((res) => {
+   navigate(`/threat/${threatId}/run/${res.id}`)
+   setLoading(false)
+ })
+}
 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     const message = description + " " + scope + " " + preconditions + " " + technologies + " " + tools + " " + useCases + " " + types + " " + information + " " + assignee + " " + repository + " " + area + "puedes responder solo con el JSON de respuesta";
-    await sendMessages(message, threatId);
-    navigate(`/threat/${threatId}`)
+    await sendMessages(message, threatId).then(() => {
+      handleRuns()
+    }).catch(() => {
+      alert('Ingresa una credencial valida')
+    })
   }
-
 
   return (
       <Form onSubmit={handleSubmit} className="w-100" style={{maxWidth: "500px"}}>
@@ -111,7 +121,7 @@ const InputDataForm = ({ threatId }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Herramientas/Sistemas involucrados</Form.Label>
-            <p style={{fontSize: "12px", fontStyle: "italic"}}>Especificar las diferentes plataformas involucradas en el proceso de pruebas según corresponda (TAPP, Transbank, Web, App, BigQuery)</p>
+            <p style={{fontSize: "12px", fontStyle: "italic"}}>Especificar las diferentes plataformas involucradas en el proceso de pruebas según corresponda</p>
             <Form.Control name='tools' onChange={handleTextChange} as="textarea" rows={2} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
@@ -157,8 +167,8 @@ const InputDataForm = ({ threatId }) => {
             <Form.Control name='area' onChange={handleTextChange} type="text" />
           </Form.Group>
           <div className="d-flex justify-content-center">
-          <Button style={{ backgroundColor: "#5280e3" }} className="mt-3 " variant="primary" type="submit">
-            Generar Casos de Prueba
+          <Button style={{ backgroundColor: "#5280e3" }} disabled={loading} className="mt-3 " variant="primary" type="submit">
+           {loading ? 'Enviando......' : 'Generar Casos de Prueba'} 
           </Button>
           </div>
         </Form>

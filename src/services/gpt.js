@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 
-const key = "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";
+const apiKey = localStorage.getItem('key')
+
+const key = apiKey;
 const openai = new OpenAI({
   apiKey: key,
   dangerouslyAllowBrowser: true,
@@ -9,14 +11,7 @@ const openai = new OpenAI({
 
 
 export const  createThreathread =  async () => {
-  const messageThread = await openai.beta.threads.create({
-    messages: [
-      {
-        role: "user",
-        content: "Hello, how are you?",
-      },
-    ],
-  });
+  const messageThread = await openai.beta.threads.create()
   return messageThread;
 };
 
@@ -50,12 +45,11 @@ export const sendMessages = async (question, id) => {
   }
 
   const data = await response.json();
-  console.log("data", data);
   return data;
 };
 
 export const runMessage = async (id) => {
-  await fetch(`https://api.openai.com/v1/threads/${id}/runs`, {
+ const response = await fetch(`https://api.openai.com/v1/threads/${id}/runs`, {
     method: "POST",
     headers: {
       "OpenAI-Beta": "assistants=v2",
@@ -71,7 +65,36 @@ export const runMessage = async (id) => {
 
   })
 
+
+  if (!response.ok) {
+    // Handle possible errors
+    const errorData = await response.json();
+    console.error("Error:", errorData);
+    throw new Error(errorData.error.message);
+  }
+
+  const data = await response.json();
+  return data;
 }
+
+
+export const getRun = async (threadId, runId) => {
+  const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
+    method: "GET",
+    headers: {
+      "OpenAI-Beta": "assistants=v2",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${key}`,
+    },
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error.message);
+  }
+
+  const data = await response.json();
+  return data;
+} 
 
 export const getMessages = async (id) => {
   const response = await fetch(`https://api.openai.com/v1/threads/${id}/messages`, {
@@ -83,13 +106,10 @@ export const getMessages = async (id) => {
     },
   });
   if (!response.ok) {
-    // Handle possible errors
     const errorData = await response.json();
-    console.error("Error:", errorData);
     throw new Error(errorData.error.message);
   }
 
   const data = await response.json();
-  console.log("data", data);
   return data;
 };

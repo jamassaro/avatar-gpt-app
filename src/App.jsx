@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LayOut><Gpt /></LayOut>} exact/>
-        <Route path="/threat/:threatId" element={<LayOut><ThreatId /></LayOut>} />
+        <Route path="/threat/:threatId/run/:runId" element={<LayOut><ThreatId /></LayOut>} />
       </Routes>
     </Router>
   )
