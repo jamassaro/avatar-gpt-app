@@ -6,7 +6,7 @@ import LayOut from './components/lay-out'
 
 function App() {
   return(
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<LayOut><Gpt /></LayOut>} exact/>
         <Route path="/threat/:threatId/run/:runId" element={<LayOut><ThreatId /></LayOut>} />
