@@ -39,7 +39,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - run: npm run build -- --base=/avatar-gpt-app/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
