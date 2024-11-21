@@ -1,23 +1,12 @@
-import { useEffect, useState } from "react"
+import { useContext } from "react"
 import InputDataForm from "../components/input-data.form"
-import { createThreathread } from "../services/gpt"
 import './gpt-page.css'
+import { ThreatContext } from "../contexts/threath-context"
 
 
 const Gpt = () => {
-  const [threatId, setThreatId] = useState(null)
-
+  const { threatId } = useContext(ThreatContext)
  
-  const handleCreateThreathread = async () => {
-    createThreathread().then((res) => {
-      setThreatId(res.id)
-    })
-  }
-  
-  useEffect(() => {
-    handleCreateThreathread()
-  }, [])
-  
   return (
     <div className='form-container'>
       <InputDataForm  threatId={threatId}/>   

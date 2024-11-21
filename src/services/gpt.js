@@ -2,6 +2,8 @@ import OpenAI from "openai";
 
 const apiKey = localStorage.getItem('key')
 
+console.log('apiKey', apiKey)
+
 const key = apiKey;
 const openai = new OpenAI({
   apiKey: key,
@@ -38,7 +40,6 @@ export const sendMessages = async (question, id) => {
   });
 
   if (!response.ok) {
-    // Handle possible errors
     const errorData = await response.json();
     console.error("Error:", errorData);
     throw new Error(errorData.error.message);
@@ -48,7 +49,7 @@ export const sendMessages = async (question, id) => {
   return data;
 };
 
-export const runMessage = async (id) => {
+export const runMessage = async (id, assistantId) => {
  const response = await fetch(`https://api.openai.com/v1/threads/${id}/runs`, {
     method: "POST",
     headers: {
@@ -57,7 +58,7 @@ export const runMessage = async (id) => {
       "Authorization": `Bearer ${key}`,
     },
     body: JSON.stringify({ 
-      "assistant_id":"asst_y8DrMYKghk2n1p1FN0BLG8oA",
+      "assistant_id": assistantId,
       "additional_instructions":null,
       "tool_choice":null
       
@@ -67,7 +68,6 @@ export const runMessage = async (id) => {
 
 
   if (!response.ok) {
-    // Handle possible errors
     const errorData = await response.json();
     console.error("Error:", errorData);
     throw new Error(errorData.error.message);

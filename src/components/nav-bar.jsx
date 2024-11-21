@@ -3,7 +3,7 @@ import { Button, Form } from 'react-bootstrap'
 import AVATTAR from '../assets/avattar.webp'
 import './lay-out.css'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 const NavBar = () => {
@@ -33,6 +33,7 @@ const NavBar = () => {
   return (
     <nav className={isApiKey ? 'nav' : 'not-nav'}>
       <img className="logo" src={AVATTAR} alt="wom-logo" />
+      
       {
        !isApiKey ?
         <Form onSubmit={handleGetApiKey} className="d-flex align-items-center ">
@@ -45,11 +46,14 @@ const NavBar = () => {
           </Button> 
         </Form> 
         :
-         <Button 
+        < div className="d-flex align-items-center gap-3">
+       <Link style={{textDecoration: 'none', color: 'white', fontSize: '20px'}} to="/audit">Auditoria</Link>
+       <Button 
           className='logout' 
           variant="primary" 
           onClick={handleLogout}>Cerrar sesión
         </Button> 
+        </div>
       }
     </nav>
   )
