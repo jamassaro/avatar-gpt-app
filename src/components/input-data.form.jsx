@@ -31,6 +31,7 @@ const options  = [
   
 
 const InputDataForm = ({ threatId }) => {
+  console.log('threatId', threatId)
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [value, setValue] = useState({
@@ -78,9 +79,11 @@ const InputDataForm = ({ threatId }) => {
     [name]: value
   }))
  }
+
+ const assistantId = 'asst_y8DrMYKghk2n1p1FN0BLG8oA'
  const handleRuns = async () => {
   setLoading(true)
-  await runMessage(threatId).then((res) => {
+  await runMessage(threatId, assistantId).then((res) => {
    navigate(`/threat/${threatId}/run/${res.id}`)
    setLoading(false)
  })

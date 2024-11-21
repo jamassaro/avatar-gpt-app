@@ -47,7 +47,7 @@ const NavBar = () => {
         </Form> 
         :
         < div className="d-flex align-items-center gap-3">
-       <Link style={{textDecoration: 'none', color: 'white', fontSize: '20px'}} to="/audit">Auditoria</Link>
+       <Link  className='btn btn-primary p-2'  to="/audit">Auditoria</Link>
        <Button 
           className='logout' 
           variant="primary" 

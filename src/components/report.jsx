@@ -12,7 +12,7 @@ const Report = ({ response = {} }) => {
   return (
     <>
       <div className="report-card">
-        <h2 className="text-center mb-4">Informe de revision plan de pruebas</h2>
+        <h2 className="text-center mb-4">Informe de revisión plan de pruebas</h2>
           {Object.entries(report).map(([sectionKey, sectionContent]) => (
             <div className="section" key={sectionKey}>
               <h2>{sectionKey}</h2>

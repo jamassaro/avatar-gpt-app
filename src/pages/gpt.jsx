@@ -5,11 +5,11 @@ import { ThreatContext } from "../contexts/threath-context"
 
 
 const Gpt = () => {
-  const { threatId } = useContext(ThreatContext)
+  const { threathId } = useContext(ThreatContext)
  
   return (
     <div className='form-container'>
-      <InputDataForm  threatId={threatId}/>   
+      <InputDataForm  threatId={threathId}/>   
     </div>
   
   )
